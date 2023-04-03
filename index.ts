@@ -1,6 +1,7 @@
 import { Vacuna } from './Vacuna';
 import { Persona } from './Persona';
 import express from 'express'; 
+import { Aplicacion } from './Aplicacion';
 
 const app: express.Application = express(); 
 
@@ -72,10 +73,22 @@ app.put("/personas/:dni", (_req,_res) => {
     persona.setApellido = _req.body.apellido;
     persona.setNacimiento = _req.body.nacimiento;
     persona.setSexo = _req.body.nacimiento;
+    persona.setAplicaciones = _req.body.aplicaciones;
   }
   _res.json(persona);   
 })
 
+/* Agregar aplicacion */
+
+app.post("/persona/:dni/aplicaciones",(_req,_res) => {
+  const persona = personas.find(item => {
+    return item.getDni == Number(_req.params.dni)
+    })
+    if (persona){
+    persona.agregarAplicacion(new Aplicacion(_req.body.fechaDeAplicacion,_req.body.vacunaAplicada,_req.body.dosis))
+    }
+  _res.json(persona);
+})  
 /* Otros */
 
 app.get("/products/:id", (_req,_res) => {

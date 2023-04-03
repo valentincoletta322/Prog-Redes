@@ -1,12 +1,10 @@
 export class Aplicacion{
     private fechaDeAplicacion: Date;
-    private dniPaciente: Number;
     private vacunaAplicada: Number;
     private dosis:Number;
     
-    constructor(fechaDeAplicacion:Date,dniPaciente:Number,vacunaAplicada:Number,dosis:Number){
+    constructor(fechaDeAplicacion:Date,vacunaAplicada:Number,dosis:Number){
         this.fechaDeAplicacion=fechaDeAplicacion;
-        this.dniPaciente=dniPaciente;
         this.vacunaAplicada=vacunaAplicada;
         this.dosis=dosis;
     }
@@ -15,10 +13,6 @@ export class Aplicacion{
 
     public get getFechaDeAplicacion() {
         return this.fechaDeAplicacion;
-    }
-
-    public get getDniPaciente() {
-        return this.dniPaciente;
     }
 
     public get getVacunaAplicada() {
@@ -35,10 +29,6 @@ export class Aplicacion{
         this.fechaDeAplicacion=fechaDeAplicacion;
     }
 
-    public set setDniPaciente(dniPaciente:Number) {
-        this.dniPaciente=dniPaciente;
-    }
-
     public set setVacunaAplicada(vacunaAplicada:Number) {
         this.vacunaAplicada=vacunaAplicada;
     }
@@ -48,3 +38,4 @@ export class Aplicacion{
     }
 
 }
+

@@ -1,9 +1,12 @@
+import { Aplicacion } from "./Aplicacion";
+
 export class Persona{
     private dni: Number;
     private nombre: String;
     private apellido: String;
     private fecha_nacimiento: Date;
     private sexo: String;
+    private aplicaciones:Array<Aplicacion>
 
     
     constructor(dni:Number,nombre:String,apellido:String,fecha_nacimiento:Date,sexo:String){
@@ -12,6 +15,7 @@ export class Persona{
         this.apellido=apellido;
         this.fecha_nacimiento=fecha_nacimiento;
         this.sexo=sexo;
+        this.aplicaciones=new Array<Aplicacion>;
     }
 
     //Getters
@@ -36,6 +40,10 @@ export class Persona{
         return this.sexo;
     }
 
+    public get getAplicaciones(){
+        return this.aplicaciones;
+    }
+
     //Setters
 
     public set setDni(dni:Number) {
@@ -58,4 +66,12 @@ export class Persona{
         this.sexo=sexo;
     }
 
+    public set setAplicaciones(aplicaciones:Array<Aplicacion>){
+        this.aplicaciones=aplicaciones;
+    }
+
+    //Metodos
+    public agregarAplicacion (aplicacion:Aplicacion){
+        this.aplicaciones.push(aplicacion);
+    }
 }
