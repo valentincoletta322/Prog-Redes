@@ -36,6 +36,11 @@ app.post("/vacunas", (_req,_res) => {
   vacunas.push(vacunaNueva);
   _res.json(vacunaNueva);   
 })
+
+app.get("/vacunas/:fabricante", (_req,_res) => {
+  _res.json(vacunas.filter(item => item.getFabricante == String(_req.params.fabricante)));
+})
+
 /* Personas */
 
 app.get("/personas", (_req,_res) => {
@@ -80,7 +85,7 @@ app.put("/personas/:dni", (_req,_res) => {
 
 /* Agregar aplicacion */
 
-app.post("/persona/:dni/aplicaciones",(_req,_res) => {
+app.post("/personas/:dni/aplicaciones",(_req,_res) => {
   const persona = personas.find(item => {
     return item.getDni == Number(_req.params.dni)
     })
@@ -89,6 +94,7 @@ app.post("/persona/:dni/aplicaciones",(_req,_res) => {
     }
   _res.json(persona);
 })  
+
 /* Otros */
 
 app.get("/products/:id", (_req,_res) => {
