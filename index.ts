@@ -45,7 +45,7 @@ app.post("/vacunas", (_req, _res) => {
   if (vacunas.find(vacuna => vacuna.getId == Number(_req.body.id))) {
     _res.status(400).json({ error: `Ya hay una vacuna con id ${_req.body.id}` });
   } else {
-    const vacunaNueva = new Vacuna(_req.body.id, _req.body.descripcion, _req.body.fabricante, _req.body.tipo, _req.body.dosisRequeridas);
+    const vacunaNueva = new Vacuna(_req.body.id, _req.body.descripcion, _req.body.fabricantes, _req.body.tipo, _req.body.dosisRequeridas);
     vacunas.push(vacunaNueva);
     _res.json(vacunaNueva);   
   }
@@ -60,7 +60,7 @@ app.put("/vacunas/:id", (_req,_res) => {
   } else {  
     let index = vacunas.indexOf(vacuna);
     vacuna.setDescripcion = _req.body.descripcion;
-    vacuna.setFabricante = _req.body.fabricante;
+    vacuna.setFabricantes = _req.body.fabricantes;
     vacuna.setTipo = _req.body.tipo;
     vacuna.setDosisRequeridas = _req.body.dosisRequeridas;
     }
@@ -79,8 +79,8 @@ app.patch("/vacunas/:id", (_req, _res) => {
           vacuna.setDescripcion = _req.body.descripcion
         }
 
-        if (_req.body.fabricante) {
-          vacuna.setFabricante = _req.body.fabricante
+        if (_req.body.fabricantes) {
+          vacuna.setFabricantes = _req.body.fabricantes
         }
 
         if (_req.body.tipo) {
@@ -163,14 +163,21 @@ app.post("/personas/:dni/aplicaciones",(_req,_res) => {
     return item.getDni == Number(_req.params.dni)
     })
     if (persona){
-    persona.agregarAplicacion(new Aplicacion(_req.body.fechaDeAplicacion,_req.body.vacunaAplicada,_req.body.dosis))
+    persona.agregarAplicacion(new Aplicacion(_req.body.fechaDeAplicacion,_req.body.vacunaAplicada,_req.body.dosis,_req.body.fabricante))
     }
   _res.json(persona);
 })
 
-app.get("/vacunas/porFabricante/:fabricante", (_req,_res) => {
-  _res.json(vacunas.filter(item => item.getFabricante == String(_req.params.fabricante)));
-})
+app.get("/vacunas/porFabricante/:fabricante", (_req, _res) => {
+  const vacunasFiltradas = vacunas.filter(v => v.getFabricantes.includes(_req.params.fabricante));
+  
+  if (vacunasFiltradas.length === 0) {
+    _res.status(404).send(`No se encontraron vacunas del fabricante '${_req.params.fabricante}'`);
+    return;
+  }
+
+  _res.json(vacunasFiltradas);
+});
 
 app.get('/personas/dosisFaltantes/:id', (_req, _res) => {
   let personasFaltantes:Array<Persona> = new Array<Persona>
