@@ -94,9 +94,18 @@ app.patch("/vacunas/:id", (_req, _res) => {
   return _res.status(204).send()
 })
 
-app.get("/vacunas/:fabricante", (_req,_res) => {
-  _res.json(vacunas.filter(item => item.getFabricante == String(_req.params.fabricante)));
-})
+app.delete('/vacunas/:id', (_req, _res) => {
+  const vacuna = vacunas.find(item => {
+    return item.getId == Number(_req.params.id);
+  });
+
+  if (vacuna) {
+    vacunas.splice(vacunas.indexOf(vacuna), 1);
+  }
+  
+  return _res.status(204).send();
+});
+
 
 /* Personas */
 
@@ -106,7 +115,7 @@ app.get("/personas", (_req,_res) => {
 
 app.post("/personas", (_req, _res) => {
   if (personas.find(persona => persona.getDni === _req.body.dni)) {
-    _res.status(400).json({ error: `Ya hay una persona con ese dni ${_req.body.dni}` });
+    _res.status(400).json({ error: `Ya hay una persona con el dni ${_req.body.dni}` });
   } else {
     const personaNueva = new Persona(_req.body.dni, _req.body.nombre,_req.body.apellido,_req.body.fecha_nacimiento,_req.body.sexo);
     personas.push(personaNueva);
@@ -147,7 +156,7 @@ app.patch('/personas/:dni', (_req, _res) => {
   return _res.status(204).send();
 });
 
-/* Agregar aplicacion */
+/* Aplicaciones */
 
 app.post("/personas/:dni/aplicaciones",(_req,_res) => {
   const persona = personas.find(item => {
@@ -157,7 +166,38 @@ app.post("/personas/:dni/aplicaciones",(_req,_res) => {
     persona.agregarAplicacion(new Aplicacion(_req.body.fechaDeAplicacion,_req.body.vacunaAplicada,_req.body.dosis))
     }
   _res.json(persona);
-})  
+})
+
+app.get("/vacunas/porFabricante/:fabricante", (_req,_res) => {
+  _res.json(vacunas.filter(item => item.getFabricante == String(_req.params.fabricante)));
+})
+
+app.get('/personas/dosisFaltantes/:id', (_req, _res) => {
+  let personasFaltantes:Array<Persona> = new Array<Persona>
+
+
+  const vacuna = vacunas.find(v => v.getId == Number(_req.params.id));
+  
+  if (!vacuna) {
+    _res.status(404).send(`Vacuna '${_req.params.id}' no encontrada`);
+    return;
+  }
+
+  personas.forEach(persona => {
+    const aplicaciones = persona.getAplicaciones.filter(a => a.getVacunaAplicada === vacuna.getId);
+    const dosisAplicadas = aplicaciones.length;
+    
+    if (dosisAplicadas < Number(vacuna.getDosisRequeridas)) {
+      let dosisFaltantes = Number(vacuna.getDosisRequeridas) - dosisAplicadas
+      personasFaltantes.push(persona);
+    }
+  });
+
+  _res.send(personasFaltantes);
+});
+
+
+
 
 /* Otros */
 

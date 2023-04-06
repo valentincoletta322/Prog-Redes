@@ -52,7 +52,7 @@ export class Vacuna{
         this.tipo=tipo;
     }
 
-    public set setDosisRequeridas(dosisRequeridas:String) {
+    public set setDosisRequeridas(dosisRequeridas:Number) {
         this.dosisRequeridas=this.dosisRequeridas;
     }
 
