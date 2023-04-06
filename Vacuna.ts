@@ -1,15 +1,15 @@
 export class Vacuna{
     private id: Number;
     private descripcion: String;
-    private fabricante: String;
+    private fabricantes: Array<String>;
     private tipo: String;
     private dosisRequeridas: Number;
 
     
-    constructor(id:Number,descripcion:String,fabricante:String,tipo:String,dosisRequeridas:Number){
+    constructor(id:Number,descripcion:String,fabricantes:Array<String>,tipo:String,dosisRequeridas:Number){
         this.id=id;
         this.descripcion=descripcion;
-        this.fabricante=fabricante;
+        this.fabricantes=fabricantes;
         this.tipo=tipo;
         this.dosisRequeridas=dosisRequeridas;
     }
@@ -22,8 +22,8 @@ export class Vacuna{
         return this.descripcion;
     }
 
-    public get getFabricante() {
-        return this.fabricante;
+    public get getFabricantes() {
+        return this.fabricantes;
     }
 
     public get getTipo() {
@@ -44,10 +44,9 @@ export class Vacuna{
         this.descripcion=descripcion;
     }
 
-    public set setFabricante(fabricante:String) {
-        this.fabricante=fabricante;
+    public set setFabricantes(fabricantes:Array<String>) {
+        this.fabricantes=fabricantes
     }
-
     public set setTipo(tipo:String) {
         this.tipo=tipo;
     }
