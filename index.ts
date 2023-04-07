@@ -2,8 +2,8 @@ import { Vacuna } from './Vacuna';
 import { Persona } from './Persona';
 import express from 'express'; 
 import { Aplicacion } from './Aplicacion';
-//const swaggerUi = require('swagger-ui-express');
-//const swaggerDocument = require('.swagger.yaml');
+import swaggerUi = require('swagger-ui-express');
+import swaggerSetup from './swagger'
 
 const app: express.Application = express(); 
 
@@ -11,19 +11,8 @@ const port = 3000;
 
 app.use(express.json());
 
-//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/documentation",swaggerUi.serve, swaggerUi.setup(swaggerSetup))
 
-class product{
-    id: number;
-    name: string;
-
-    constructor(_id: number, _name: string){
-       this.id=_id;
-       this.name=_name;     
-    }
-}
-
-let products:Array<product> = new Array<product>
 let vacunas:Array<Vacuna> = new Array<Vacuna>
 let personas:Array<Persona> = new Array<Persona>
 
@@ -58,7 +47,6 @@ app.put("/vacunas/:id", (_req,_res) => {
   if (!vacuna){
       _res.status(404).send() 
   } else {  
-    let index = vacunas.indexOf(vacuna);
     vacuna.setDescripcion = _req.body.descripcion;
     vacuna.setFabricantes = _req.body.fabricantes;
     vacuna.setTipo = _req.body.tipo;
@@ -125,12 +113,13 @@ app.post("/personas", (_req, _res) => {
 
 app.delete("/personas/:dni", (_req,_res) => {
   const persona = personas.find(item => {
-      return item.getDni == Number(_req.params.dni)
+      return item.getDni == Number(_req.params.dni);
   })
   if (persona){
     delete personas[personas.indexOf(persona)]
+    _res.status(204).send();
   }
-  _res.status(204).send()
+  _res.status(404).send();
 })
 
 app.patch('/personas/:dni', (_req, _res) => {
@@ -156,7 +145,33 @@ app.patch('/personas/:dni', (_req, _res) => {
   return _res.status(204).send();
 });
 
-/* Aplicaciones */
+app.put("/personas/:dni", (_req,_res) => {
+  const persona = personas.find(item => {
+      return item.getDni == Number(_req.params.dni)
+  })
+  if (!persona){
+      _res.status(404).send() 
+  } else {  
+    persona.setNombre = _req.body.nombre;
+    persona.setApellido = _req.body.apellido;
+    persona.setSexo = _req.body.tipo;
+    persona.setAplicaciones = _req.body.aplicaiones;
+    }
+  _res.status(204).send()
+})
+
+/* Otros métodos */
+
+app.get("/personas/:dni/aplicaciones",(_req,_res) => {
+  const persona = personas.find(item => {
+    return item.getDni == Number(_req.params.dni)
+    })
+    if (persona){
+      _res.json(persona.getAplicaciones);
+    }
+    _res.status(404).send();
+})
+
 
 app.post("/personas/:dni/aplicaciones",(_req,_res) => {
   const persona = personas.find(item => {
@@ -164,9 +179,20 @@ app.post("/personas/:dni/aplicaciones",(_req,_res) => {
     })
     if (persona){
     persona.agregarAplicacion(new Aplicacion(_req.body.fechaDeAplicacion,_req.body.vacunaAplicada,_req.body.dosis,_req.body.fabricante))
+    _res.json(persona);  
+  }
+  _res.status(404).send()
+})
+
+/* app.delete("/personas/:dni/aplicaciones",(_req,_res) => {
+  const persona = personas.find(item => {
+    return item.getDni == Number(_req.params.dni)
+    })
+    if (persona){
+    persona.agregarAplicacion(new Aplicacion(_req.body.fechaDeAplicacion,_req.body.vacunaAplicada,_req.body.dosis,_req.body.fabricante))
     }
   _res.json(persona);
-})
+}) */
 
 app.get("/vacunas/porFabricante/:fabricante", (_req, _res) => {
   const vacunasFiltradas = vacunas.filter(v => v.getFabricantes.includes(_req.params.fabricante));
@@ -181,8 +207,7 @@ app.get("/vacunas/porFabricante/:fabricante", (_req, _res) => {
 
 app.get('/personas/dosisFaltantes/:id', (_req, _res) => {
   let personasFaltantes:Array<Persona> = new Array<Persona>
-
-
+  
   const vacuna = vacunas.find(v => v.getId == Number(_req.params.id));
   
   if (!vacuna) {
