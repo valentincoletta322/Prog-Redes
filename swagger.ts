@@ -174,27 +174,6 @@ const swaggerDefinition: OAS3Definition = {
                 }
             }
         },
-        "/personas/dosisFaltantes/{id}": {
-            get: {
-                summary: "Personas con dosis faltantes",
-                description: "Devuelve todas las personas que requieren una dosis",
-                parameters: [
-                    {
-                    name:"id",
-                    in: "path",
-                    description: "Busca por ID de vacuna"
-                    }
-                ],
-                responses: {
-                    200: {
-                        description: "OK"
-                    },
-                    404: {
-                        description: "NOT FOUND - No se encontró una vacuna con esa ID"
-                    }
-                }
-            },
-        },
         "/vacunas":{
             get: {
                 summary: "Vacunas registradas",
@@ -307,7 +286,7 @@ const swaggerDefinition: OAS3Definition = {
                 }
             }
         },
-        "/vacunas/porFabricante/{fabricante}": {
+        "/vacunas/fabricante/{fabricante}": {
             get: {
                 summary: "Filtrar vacunas",
                 description: "Devuelve las vacunas que fabrica un laboratorio",
@@ -324,7 +303,27 @@ const swaggerDefinition: OAS3Definition = {
                     }
                 }
             }
-        }
+        },        "/vacunas/{id}/dosisFaltantes": {
+            get: {
+                summary: "Personas con dosis faltantes",
+                description: "Devuelve todas las personas que requieren una dosis",
+                parameters: [
+                    {
+                    name:"id",
+                    in: "path",
+                    description: "Busca por ID de vacuna"
+                    }
+                ],
+                responses: {
+                    200: {
+                        description: "OK"
+                    },
+                    404: {
+                        description: "NOT FOUND - No se encontró una vacuna con esa ID"
+                    }
+                }
+            },
+        },
     },
     components: {
         /*securitySchemes: {
