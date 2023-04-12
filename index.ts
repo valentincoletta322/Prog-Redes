@@ -28,31 +28,17 @@ app.use("/vacunas/:id", routerVacunas)
 
 app.use("/vacunas", routerVacunas);
 
-app.put("/vacunas/:id", routerVacunas)
-
-app.patch("/vacunas/:id", routerVacunas)
-
-app.delete('/vacunas/:id', routerVacunas);
-
+app.use("/vacunas/:id", routerVacunas)
 
 /* Personas */
 
-app.get("/personas", routerPersonas)
+app.use("/personas", routerPersonas)
 
-app.post("/personas", routerPersonas);
-
-app.delete("/personas/:dni", routerPersonas)
-
-app.patch('/personas/:dni', routerPersonas);
-
-app.put("/personas/:dni", routerPersonas)
+app.use("/personas/:dni", routerPersonas)
 
 /* Otros métodos */
 
-app.get("/personas/:dni/aplicaciones", routerPersonas)
-
-
-app.post("/personas/:dni/aplicaciones",routerPersonas)
+app.use("/personas/:dni/aplicaciones", routerPersonas)
 
 /* app.delete("/personas/:dni/aplicaciones",(_req,_res) => {
   const persona = personas.find(item => {
@@ -64,9 +50,9 @@ app.post("/personas/:dni/aplicaciones",routerPersonas)
   _res.json(persona);
 }) */
 
-app.get("/vacunas/fabricante/:fabricante", routerVacunas);
+app.use("/vacunas/fabricante/:fabricante", routerVacunas);
 
-app.get('/vacunas/:id/dosisFaltantes', routerVacunas);
+app.use('/vacunas/:id/dosisFaltantes', routerVacunas);
 
 
 
