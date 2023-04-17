@@ -13,6 +13,10 @@ const port = 3000;
 
 app.use(express.json());
 
+app.use(routerVacunas);
+
+app.use(routerPersonas);
+
 app.use("/documentation",swaggerUi.serve, swaggerUi.setup(swaggerSetup))
 
 export let personas:Array<Persona> = new Array<Persona>
@@ -22,19 +26,19 @@ app.get('/', (_req , _res) => _res.send('Bienvenido a mi API REST!'));
 
  /* Vacunas */
 
-app.use("/vacunas", routerVacunas)
+app.use("/vacunas", routerVacunas);
 
-app.use("/vacunas/:id", routerVacunas)
+app.use("/vacunas/:id", routerVacunas);
 
 app.use("/vacunas", routerVacunas);
 
-app.use("/vacunas/:id", routerVacunas)
+app.use("/vacunas/:id", routerVacunas);
 
 /* Personas */
 
-app.use("/personas", routerPersonas)
+app.use("/personas", routerPersonas);
 
-app.use("/personas/:dni", routerPersonas)
+app.use("/personas/:dni", routerPersonas);
 
 /* Otros métodos */
 
