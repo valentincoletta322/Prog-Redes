@@ -1,6 +1,7 @@
 import { Vacuna } from './Vacuna';
 import { Persona } from './Persona';
 import express from 'express'; 
+//import {  } from './mongos/prueba';
 import { Aplicacion } from './Aplicacion';
 import swaggerUi = require('swagger-ui-express');
 import swaggerSetup from './swagger'
@@ -22,9 +23,11 @@ app.use("/documentation",swaggerUi.serve, swaggerUi.setup(swaggerSetup))
 export let personas:Array<Persona> = new Array<Persona>
 export let vacunas:Array<Vacuna> = new Array<Vacuna>
 
+//run();
+
 app.get('/', (_req , _res) => _res.send('Bienvenido a mi API REST!'));
 
- /* Vacunas */
+ /* Vacunas */ 
 
 app.use("/vacunas", routerVacunas);
 

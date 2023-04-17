@@ -1,14 +1,17 @@
-import { Router } from "express";
+import { Router, Request, Response} from "express";
 import { Vacuna } from '../Vacuna';
 import { Persona } from "../Persona";
 import { Aplicacion } from "../Aplicacion";
 import { personas } from "..";
 import { vacunas } from "..";
+import { StatusCodes } from "http-status-codes";
+import { deletePersona, findPersona, findPersonas } from "../mongos/prueba";
 
 export const routerPersonas = Router();
 
 
 routerPersonas.get("/personas", (_req,_res) => {
+    findPersonas();
     _res.json(personas);
   })
   
@@ -22,16 +25,11 @@ routerPersonas.get("/personas", (_req,_res) => {
     }
   });
   
-  routerPersonas.delete("/personas/:dni", (_req,_res) => {
-    const persona = personas.find(item => {
-        return item.getDni == Number(_req.params.dni);
-    })
-    if (persona){
-      delete personas[personas.indexOf(persona)]
-      _res.status(204).send();
-    }
-    _res.status(404).send();
-  })
+  routerPersonas.delete('/personas/:dni', async (req, res) => {
+    const dni = Number(req.params.dni);
+    const result = await deletePersona(dni);
+    res.status(result).send();
+  });
   
   routerPersonas.patch('/personas/:dni', (_req, _res) => {
     const dni = Number(_req.params.dni);
