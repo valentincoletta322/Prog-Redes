@@ -1,12 +1,12 @@
-import { Vacuna } from './Vacuna';
-import { Persona } from './Persona';
+import { Vacuna } from './src/clases/Vacuna';
+import { Persona } from './src/clases/Persona';
 import express from 'express'; 
 //import {  } from './mongos/prueba';
-import { Aplicacion } from './Aplicacion';
+import { Aplicacion } from './src/clases/Aplicacion';
 import swaggerUi = require('swagger-ui-express');
 import swaggerSetup from './swagger'
-import { routerVacunas } from './routes/routesVacunas';
-import { routerPersonas } from './routes/routesPersonas';
+import { routerVacunas } from './src/routes/routesVacunas';
+import { routerPersonas } from './src/routes/routesPersonas';
 
 const app: express.Application = express(); 
 

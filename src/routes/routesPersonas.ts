@@ -1,9 +1,9 @@
 import { Router, Request, Response} from "express";
-import { Vacuna } from '../Vacuna';
-import { Persona } from "../Persona";
-import { Aplicacion } from "../Aplicacion";
-import { personas } from "..";
-import { vacunas } from "..";
+import { Vacuna } from '../clases/Vacuna';
+import { Persona } from "../clases/Persona";
+import { Aplicacion } from "../clases/Aplicacion";
+import { personas } from "../..";
+import { vacunas } from "../..";
 import { StatusCodes } from "http-status-codes";
 import { deletePersona, findPersona, findPersonas } from "../mongos/prueba";
 

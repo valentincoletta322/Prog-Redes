@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { Vacuna } from '../Vacuna';
-import { Persona } from "../Persona";
-import { personas } from "..";
-import { vacunas } from "..";
+import { Vacuna } from '../clases/Vacuna';
+import { Persona } from "../clases/Persona";
+import { personas } from "../..";
+import { vacunas } from "../..";
 
 export const routerVacunas = Router();
 
