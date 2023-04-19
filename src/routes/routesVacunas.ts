@@ -3,6 +3,7 @@ import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
 import { personas } from "../..";
 import { vacunas } from "../..";
+import { deleteVacuna } from "../mongos/vacunasMongo";
 
 export const routerVacunas = Router();
 
@@ -57,16 +58,10 @@ routerVacunas.post("/vacunas", (_req, _res) => {
     _res.status(204).send()
   })
 
-  routerVacunas.delete('/vacunas/:id', (_req, _res) => {
-    const vacuna = vacunas.find(item => {
-      return item.getId == Number(_req.params.id);
-    });
-  
-    if (vacuna) {
-      vacunas.splice(vacunas.indexOf(vacuna), 1);
-    }
-    
-    return _res.status(204).send();
+  routerVacunas.delete('/vacunas/:id', async (_req, _res) => {
+    const id = Number(_req.params.id);
+    const result = await deleteVacuna(id);
+    _res.status(result).send();
   });
   
   routerVacunas.get('/vacunas/:id/dosisFaltantes', (_req, _res) => {

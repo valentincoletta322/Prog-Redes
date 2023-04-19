@@ -5,13 +5,13 @@ import { Aplicacion } from "../clases/Aplicacion";
 import { personas } from "../..";
 import { vacunas } from "../..";
 import { StatusCodes } from "http-status-codes";
-import { deletePersona, findPersona, findPersonas } from "../mongos/prueba";
+import { deletePersona, findPersona, findPersonas } from "../mongos/personasMongo";
 
 export const routerPersonas = Router();
 
 
-routerPersonas.get("/personas", (_req,_res) => {
-    findPersonas();
+routerPersonas.get("/personas", async (_req,_res) => {
+    const result = await findPersonas();
     _res.json(personas);
   })
   
@@ -25,10 +25,10 @@ routerPersonas.get("/personas", (_req,_res) => {
     }
   });
   
-  routerPersonas.delete('/personas/:dni', async (req, res) => {
-    const dni = Number(req.params.dni);
+  routerPersonas.delete('/personas/:dni', async (_req, _res) => {
+    const dni = Number(_req.params.dni);
     const result = await deletePersona(dni);
-    res.status(result).send();
+    _res.status(result).send();
   });
   
   routerPersonas.patch('/personas/:dni', (_req, _res) => {
