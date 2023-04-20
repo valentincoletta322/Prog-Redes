@@ -3,7 +3,7 @@ import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
 import { personas } from "../..";
 import { vacunas } from "../..";
-import { deleteVacuna, findVacuna, findVacunas } from "../mongos/vacunasMongo";
+import { deleteVacuna, findVacuna, findVacunas, insertVacunas, updateVacuna } from "../mongos/vacunasMongo";
 
 export const routerVacunas = Router();
 
@@ -21,18 +21,18 @@ routerVacunas.get("/vacunas/:id", async (_req,_res) => {
   _res.json(vacuna)
 })
 
-routerVacunas.post("/vacunas", (_req, _res) => {
-    if (vacunas.find(vacuna => vacuna.getId == Number(_req.body.id))) {
-      _res.status(400).json({ error: `Ya hay una vacuna con id ${_req.body.id}` });
-    } else {
-      const vacunaNueva = new Vacuna(_req.body.id, _req.body.descripcion, _req.body.fabricantes, _req.body.tipo, _req.body.dosisRequeridas);
-      vacunas.push(vacunaNueva);
-      _res.json(vacunaNueva);   
-    }
+routerVacunas.post("/vacunas", async (_req, _res) => {
+  if (await findVacuna(_req.body.id)) {
+    _res.status(400).json({ error: `Ya hay una vacuna con id ${_req.body.id}` });
+  } else {
+    const vacuna = new Vacuna(_req.body.id, _req.body.descripcion,_req.body.fabricantes,_req.body.tipo,_req.body.dosisRequeridas);
+    await insertVacunas(vacuna);
+    _res.json(vacuna);
+  }
   });
 
   routerVacunas.put("/vacunas/:id", async (_req,_res) => {
-    const vacuna = await findVacuna(Number(_req.params.id));
+    const vacuna = await findVacuna(Number(_req.params.id))
     if (!vacuna){
       _res.status(404).send;
     } else {  
@@ -40,10 +40,32 @@ routerVacunas.post("/vacunas", (_req, _res) => {
       vacuna.setFabricantes = _req.body.fabricantes;
       vacuna.setTipo = _req.body.tipo;
       vacuna.setDosisRequeridas = _req.body.dosisRequeridas;
-      }
+      await updateVacuna(vacuna);  
+    }
     _res.status(204).send()
   })
 
+  routerVacunas.patch('/vacunas/:id', async (_req, _res) => {
+    const vacuna = await findVacuna(Number(_req.params.id))
+    if (!vacuna){
+      _res.status(404).send;
+    }else{
+      if (_req.body.descripcion) {
+        vacuna.setDescripcion=_req.body.descripcion;
+      }
+      if (_req.body.tipo) {
+        vacuna.setTipo=_req.body.tipo;
+      }
+      if (_req.body.fabricantes) {
+        vacuna.setFabricantes=_req.body.fabricantes;
+      }
+      if (_req.body.dosisRequeridas) {
+        vacuna.setDosisRequeridas=_req.body.dosisRequeridas;
+      }
+      await updateVacuna(vacuna);
+    }
+    return _res.status(204).send();
+  });
 
   routerVacunas.delete('/vacunas/:id', async (_req, _res) => {
     const id = Number(_req.params.id);
@@ -84,3 +106,4 @@ routerVacunas.post("/vacunas", (_req, _res) => {
   
     _res.json(vacunasFiltradas);
   });
+

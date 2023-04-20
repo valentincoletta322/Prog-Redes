@@ -5,14 +5,15 @@ import { Aplicacion } from "../clases/Aplicacion";
 import { personas } from "../..";
 import { vacunas } from "../..";
 import { StatusCodes } from "http-status-codes";
-import { deletePersona, findPersona, findPersonas } from "../mongos/personasMongo";
+import { deletePersona, findPersona, findPersonas, insertPersona, updatePersona } from "../mongos/personasMongo";
 
 export const routerPersonas = Router();
 
 
 routerPersonas.get("/personas", async (_req,_res) => {
-    const result = await findPersonas();
-    _res.json(result);
+    const listaDePersonas = await findPersonas();
+    console.log(listaDePersonas);
+    _res.json(listaDePersonas);
   })
 
   routerPersonas.get("/personas/:dni", async (_req,_res) => {
@@ -23,12 +24,12 @@ routerPersonas.get("/personas", async (_req,_res) => {
     _res.json(persona)
 })
   
-routerPersonas.post("/personas", (_req, _res) => {
-    if (personas.find(persona => persona.getDni === _req.body.dni)) {
+routerPersonas.post("/personas", async (_req, _res) => {
+    if (await findPersona(_req.body.dni)) {
       _res.status(400).json({ error: `Ya hay una persona con el dni ${_req.body.dni}` });
     } else {
       const personaNueva = new Persona(_req.body.dni, _req.body.nombre,_req.body.apellido,_req.body.fecha_nacimiento,_req.body.sexo);
-      personas.push(personaNueva);
+      await insertPersona(personaNueva);
       _res.json(personaNueva);
     }
   });
@@ -62,10 +63,8 @@ routerPersonas.post("/personas", (_req, _res) => {
     return _res.status(204).send();
   });
   
-  routerPersonas.put("/personas/:dni", (_req,_res) => {
-    const persona = personas.find(item => {
-        return item.getDni == Number(_req.params.dni)
-    })
+  routerPersonas.put("/personas/:dni", async (_req,_res) => {
+    const persona = await findPersona(Number(_req.params.dni));
     if (!persona){
         _res.status(404).send() 
     } else {  
@@ -73,7 +72,8 @@ routerPersonas.post("/personas", (_req, _res) => {
       persona.setApellido = _req.body.apellido;
       persona.setSexo = _req.body.tipo;
       persona.setAplicaciones = _req.body.aplicaiones;
-      }
+      await updatePersona(persona);  
+    }
     _res.status(204).send()
   })
   

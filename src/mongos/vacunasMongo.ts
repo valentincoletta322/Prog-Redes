@@ -10,13 +10,10 @@ const client = new MongoClient(url)
 
 
 export async function findVacunas() {
-
-
         const database = client.db('Vacunacion');
         const vacunas = database.collection('Vacunas');
 
-        const result = vacunas.find();
-        const documentos = await result.toArray();
+        const documentos = await vacunas.find().toArray();
         const vacunasArray = documentos.map((doc: { id: Number; descripcion: String; fabricantes: Array<String>; tipo:String; dosisRequeridas:Number }) => new Vacuna(doc.id, doc.descripcion, doc.fabricantes, doc.tipo, doc.dosisRequeridas));
 
         console.log(vacunasArray);
@@ -50,8 +47,33 @@ export async function findVacuna(id:Number) {
       const query = { id: id };
       const result = await vacunas.findOneAndDelete(query);
       if (!result.value) {
-        result.value = 404;
+        return 404;
       }
-      console.log(`DELETE`);
-      return result.value;
+      return 204;
+}
+
+export async function insertVacunas(vacuna: Vacuna){
+  const database = client.db('Vacunacion');
+  const personas = database.collection('Vacunas');
+
+  await personas.insertOne({
+    id: vacuna.getId,
+    descripcion: vacuna.getDescripcion,
+    fabricantes: vacuna.getFabricantes,
+    tipo: vacuna.getTipo,
+    dosisRequeridas: vacuna.getDosisRequeridas,
+  });
+}
+
+export async function updateVacuna(vacuna: Vacuna) {
+
+  const database = client.db('Vacunacion');
+  const vacunas = database.collection('Vacunas');
+  const query = { id: vacuna.getId };
+  const result = await vacunas.findOneAndReplace(query, JSON.parse(JSON.stringify(vacuna)));
+  if (!result.value) {
+    return 404;
+  }
+  else return 204;
+  
 }

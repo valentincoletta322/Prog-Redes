@@ -11,27 +11,30 @@ const client = new MongoClient(url)
 
 
 export async function findPersonas() {
-
-
-        const database = client.db('Vacunacion');
-
-        const usuarios = database.collection('Pacientes');
-
-        // Query for a movie that has the title 'Back to the Future'
-
-        // const query = { dni: dni };
-
-        const cursor = usuarios.find();
-        const documentos = await cursor.toArray();
-
-        console.log(documentos.length)
-
-        const personasArray = documentos.map((doc: { nombre: String; apellido: String; dni: Number; nacimiento: Date; sexo:String; aplicaciones:Array<Aplicacion> }) => {
+    /*return new Promise<any>((resolve, reject)=>{
+      const database = client.db('Vacunacion');
+      const pacientes = database.collection('Pacientes');
+    pacientes.find().toArray().then((documentos: { nombre: String; apellido: String; dni: Number; nacimiento: Date; sexo: String; aplicaciones: Aplicacion[]; }[])=>{
+          console.log(documentos)
+          resolve(documentos.map((doc: { nombre: String; apellido: String; dni: Number; nacimiento: Date; sexo:String; aplicaciones:Array<Aplicacion> }) => {
+            const persona = new Persona(doc.dni, doc.nombre, doc.apellido, doc.nacimiento, doc.sexo);
+            persona.setAplicaciones=doc.aplicaciones;
+            return persona
+          }));
+      })
+    })
+    */
+        
+      const database = client.db('Vacunacion');
+      const pacientes = database.collection('Pacientes');
+        
+      const documentos = await pacientes.find().toArray();
+      const personasArray = documentos.map((doc: { nombre: String; apellido: String; dni: Number; nacimiento: Date; sexo:String; aplicaciones:Array<Aplicacion> }) => {
           const persona = new Persona(doc.dni, doc.nombre, doc.apellido, doc.nacimiento, doc.sexo);
           persona.setAplicaciones=doc.aplicaciones;
-          console.log(persona);
+          return persona
         });
-
+        
         return personasArray;
    }
 
@@ -63,10 +66,42 @@ export async function findPersona(dni:Number) {
       const query = { dni: dni };
       const result = await usuarios.findOneAndDelete(query);
       if (!result.value) {
-        result.value = 404;
+        return 404;
       }
-      console.log(`DELETE`);
-      return result.value;
+      else return 204;
+      
 }
 
-findPersonas();
+
+export async function updatePersona(persona: Persona) {
+
+  const database = client.db('Vacunacion');
+  const usuarios = database.collection('Pacientes');
+  const query = { dni: persona.getDni };
+  const result = await usuarios.findOneAndReplace(query, JSON.parse(JSON.stringify(persona)));
+  if (!result.value) {
+    return 404;
+  }
+  else return 204;
+}
+
+
+export async function insertPersona(persona: Persona){
+    const database = client.db('Vacunacion');
+    const personas = database.collection('Pacientes');
+
+    await personas.insertOne({
+      dni: persona.getDni,
+      nombre: persona.getNombre,
+      apellido: persona.getApellido,
+      nacimiento: persona.getNacimiento,
+      sexo: persona.getSexo,
+      aplicaciones: persona.getAplicaciones,
+    });
+}
+
+
+
+
+
+//findPersonas();
