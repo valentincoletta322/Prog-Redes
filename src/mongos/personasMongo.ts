@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";  
+import { Persona } from "../clases/Persona";
+import { Aplicacion } from "../clases/Aplicacion";
 
 const { MongoClient } = require("mongodb");
 
@@ -23,6 +25,10 @@ export async function findPersonas() {
         const documentos = await cursor.toArray();
 
         console.log(documentos);
+        const personasArray = documentos.map((doc: { nombre: String; apellido: String; dni: Number; fecha_nacimiento: Date; sexo:String; aplicaciones:Array<Aplicacion> }) => new Persona(doc.dni, doc.nombre, doc.apellido, doc.fecha_nacimiento, doc.sexo).setAplicaciones=doc.aplicaciones);
+
+        console.log(personasArray);
+        return personasArray;
 
    }
 
@@ -36,9 +42,12 @@ export async function findPersona(dni:Number) {
         const query = { dni: dni };
 
         const cursor = await personas.findOne(query);
-        //const documentos = await cursor.toArray();
 
-        console.log(cursor);
+        const persona = new Persona(cursor.id, cursor.nombre, cursor.apellido, cursor.fecha_nacimiento, cursor.sexo);
+        //const documentos = await cursor.toArray();
+        console.log(persona);
+
+        return persona;
 
    }
 
@@ -55,3 +64,6 @@ export async function findPersona(dni:Number) {
       console.log(`DELETE`);
       return result.value;
 }
+
+
+findPersonas();

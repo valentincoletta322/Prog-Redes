@@ -12,7 +12,7 @@ export const routerPersonas = Router();
 
 routerPersonas.get("/personas", async (_req,_res) => {
     const result = await findPersonas();
-    _res.json(personas);
+    _res.json(result);
   })
   
   routerPersonas.post("/personas", (_req, _res) => {

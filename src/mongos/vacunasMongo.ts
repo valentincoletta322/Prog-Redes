@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";  
+import { Vacuna } from "../clases/Vacuna";
 
 const { MongoClient } = require("mongodb");
 
@@ -17,12 +18,11 @@ export async function findVacunas() {
 
         const result = vacunas.find();
         const documentos = await result.toArray();
-        if (!result.value) {
-          result.value = 404;
-        }
         console.log(documentos);
-        console.log(`FIND MANY`);
-        return result.value;
+        const vacunasArray = documentos.map((doc: { id: Number; descripcion: String; fabricantes: Array<String>; tipo:String; dosisRequeridas:Number }) => new Vacuna(doc.id, doc.descripcion, doc.fabricantes, doc.tipo, doc.dosisRequeridas));
+
+        console.log(vacunasArray);
+        return vacunasArray;
    }
 
 
