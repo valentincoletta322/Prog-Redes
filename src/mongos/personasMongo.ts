@@ -23,15 +23,16 @@ export async function findPersonas() {
 
         const cursor = usuarios.find();
         const documentos = await cursor.toArray();
-        const personasArray = documentos.map((doc: { nombre: String; apellido: String; dni: Number; fecha_nacimiento: Date; sexo:String; aplicaciones:Array<Aplicacion> }) => new Persona(doc.dni, doc.nombre, doc.apellido, doc.fecha_nacimiento, doc.sexo).setAplicaciones=doc.aplicaciones);
 
-        console.log(personasArray);
-        console.log("holi");
+        console.log(documentos.length)
+
+        const personasArray = documentos.map((doc: { nombre: String; apellido: String; dni: Number; nacimiento: Date; sexo:String; aplicaciones:Array<Aplicacion> }) => {
+          const persona = new Persona(doc.dni, doc.nombre, doc.apellido, doc.nacimiento, doc.sexo);
+          persona.setAplicaciones=doc.aplicaciones;
+          console.log(persona);
+        });
+
         return personasArray;
-
-
-        //console.log(documentos);
-
    }
 
 
@@ -47,10 +48,9 @@ export async function findPersona(dni:Number) {
           return null;
         }
 
-        const persona = new Persona(doc.dni, doc.nombre, doc.apellido, doc.fecha_nacimiento, doc.sexo);
+        const persona = new Persona(doc.dni, doc.nombre, doc.apellido, doc.nacimiento, doc.sexo);
         persona.setAplicaciones=doc.aplicaciones;
 
-        console.log(persona);
         return persona;
 
    }
@@ -68,3 +68,5 @@ export async function findPersona(dni:Number) {
       console.log(`DELETE`);
       return result.value;
 }
+
+findPersonas();

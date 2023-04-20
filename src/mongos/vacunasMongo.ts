@@ -13,12 +13,10 @@ export async function findVacunas() {
 
 
         const database = client.db('Vacunacion');
-
         const vacunas = database.collection('Vacunas');
 
         const result = vacunas.find();
         const documentos = await result.toArray();
-        console.log(documentos);
         const vacunasArray = documentos.map((doc: { id: Number; descripcion: String; fabricantes: Array<String>; tipo:String; dosisRequeridas:Number }) => new Vacuna(doc.id, doc.descripcion, doc.fabricantes, doc.tipo, doc.dosisRequeridas));
 
         console.log(vacunasArray);

@@ -3,13 +3,14 @@ import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
 import { personas } from "../..";
 import { vacunas } from "../..";
-import { deleteVacuna, findVacuna } from "../mongos/vacunasMongo";
+import { deleteVacuna, findVacuna, findVacunas } from "../mongos/vacunasMongo";
 
 export const routerVacunas = Router();
 
 
-routerVacunas.get('/vacunas', (_req,_res) => {
-    _res.json(vacunas);
+routerVacunas.get('/vacunas', async (_req,_res) => {
+    const vacunitas = await findVacunas();
+    _res.json(vacunitas);
 });
 
 routerVacunas.get("/vacunas/:id", async (_req,_res) => {
@@ -30,12 +31,10 @@ routerVacunas.post("/vacunas", (_req, _res) => {
     }
   });
 
-  routerVacunas.put("/vacunas/:id", (_req,_res) => {
-    const vacuna = vacunas.find(item => {
-        return item.getId == Number(_req.params.id)
-    })
+  routerVacunas.put("/vacunas/:id", async (_req,_res) => {
+    const vacuna = await findVacuna(Number(_req.params.id));
     if (!vacuna){
-        _res.status(404).send() 
+      _res.status(404).send;
     } else {  
       vacuna.setDescripcion = _req.body.descripcion;
       vacuna.setFabricantes = _req.body.fabricantes;
@@ -45,20 +44,6 @@ routerVacunas.post("/vacunas", (_req, _res) => {
     _res.status(204).send()
   })
 
-  routerVacunas.put("/vacunas/:id", (_req,_res) => {
-    const vacuna = vacunas.find(item => {
-        return item.getId == Number(_req.params.id)
-    })
-    if (!vacuna){
-        _res.status(404).send() 
-    } else {  
-      vacuna.setDescripcion = _req.body.descripcion;
-      vacuna.setFabricantes = _req.body.fabricantes;
-      vacuna.setTipo = _req.body.tipo;
-      vacuna.setDosisRequeridas = _req.body.dosisRequeridas;
-      }
-    _res.status(204).send()
-  })
 
   routerVacunas.delete('/vacunas/:id', async (_req, _res) => {
     const id = Number(_req.params.id);
