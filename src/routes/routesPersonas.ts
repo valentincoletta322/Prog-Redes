@@ -2,8 +2,6 @@ import { Router, Request, Response} from "express";
 import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
 import { Aplicacion } from "../clases/Aplicacion";
-import { personas } from "../..";
-import { vacunas } from "../..";
 import { StatusCodes } from "http-status-codes";
 import { deletePersona, findPersona, findPersonas, insertPersona, updatePersona } from "../mongos/personasMongo";
 
@@ -78,24 +76,25 @@ routerPersonas.post("/personas", async (_req, _res) => {
   
   /* Otros métodos */
   
-  routerPersonas.get("/personas/:dni/aplicaciones",(_req,_res) => {
-    const persona = personas.find(item => {
-      return item.getDni == Number(_req.params.dni)
-      })
-      if (persona){
-        _res.json(persona.getAplicaciones);
-      }
-      _res.status(404).send();
+  routerPersonas.get("/personas/:dni/aplicaciones",async (_req,_res) => {
+    const persona = await findPersona(Number(_req.params.dni));
+    if (!persona){
+        _res.status(404).send() 
+    }
+     else{
+      _res.json(persona.getAplicaciones)
+     } 
   })
   
   
-  routerPersonas.post("/personas/:dni/aplicaciones",(_req,_res) => {
-    const persona = personas.find(item => {
-      return item.getDni == Number(_req.params.dni)
-      })
-      if (persona){
+  routerPersonas.post("/personas/:dni/aplicaciones", async (_req,_res) => {
+    const persona = await findPersona(Number(_req.params.dni));
+    if (!persona){
+        _res.status(404).send() 
+    }
+    else {
       persona.agregarAplicacion(new Aplicacion(_req.body.fechaDeAplicacion,_req.body.vacunaAplicada,_req.body.dosis,_req.body.fabricante))
+      updatePersona(persona);
       _res.json(persona);  
     }
-    _res.status(404).send()
   })

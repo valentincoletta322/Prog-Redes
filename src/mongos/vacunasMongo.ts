@@ -15,7 +15,6 @@ export async function findVacunas() {
 
         const documentos = await vacunas.find().toArray();
         const vacunasArray = documentos.map((doc: { id: Number; descripcion: String; fabricantes: Array<String>; tipo:String; dosisRequeridas:Number }) => new Vacuna(doc.id, doc.descripcion, doc.fabricantes, doc.tipo, doc.dosisRequeridas));
-
         console.log(vacunasArray);
         return vacunasArray;
    }

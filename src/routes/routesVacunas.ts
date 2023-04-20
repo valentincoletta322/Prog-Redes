@@ -1,16 +1,17 @@
 import { Router } from "express";
 import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
-import { personas } from "../..";
-import { vacunas } from "../..";
+//import { personas } from "../..";
+//import { vacunas } from "../..";
 import { deleteVacuna, findVacuna, findVacunas, insertVacunas, updateVacuna } from "../mongos/vacunasMongo";
+import { findPersonas } from "../mongos/personasMongo";
 
 export const routerVacunas = Router();
 
 
 routerVacunas.get('/vacunas', async (_req,_res) => {
-    const vacunitas = await findVacunas();
-    _res.json(vacunitas);
+    const vacunasMongo = await findVacunas();
+    _res.json(vacunasMongo);
 });
 
 routerVacunas.get("/vacunas/:id", async (_req,_res) => {
@@ -73,31 +74,32 @@ routerVacunas.post("/vacunas", async (_req, _res) => {
     _res.status(result).send();
   });
   
-  routerVacunas.get('/vacunas/:id/dosisFaltantes', (_req, _res) => {
+  routerVacunas.get('/vacunas/:id/dosisFaltantes', async (_req, _res) => {
     let personasFaltantes:Array<Persona> = new Array<Persona>
     
-    const vacuna = vacunas.find(v => v.getId == Number(_req.params.id));
-    
-    if (!vacuna) {
-      _res.status(404).send(`Vacuna '${_req.params.id}' no encontrada`);
-      return;
+    const vacuna = await findVacuna(Number(_req.params.id));
+    if (!vacuna){
+      _res.status(404).send;
     }
-  
-    personas.forEach(persona => {
-      const aplicaciones = persona.getAplicaciones.filter(a => a.getVacunaAplicada === vacuna.getId);
-      const dosisAplicadas = aplicaciones.length;
-      
-      if (dosisAplicadas < Number(vacuna.getDosisRequeridas)) {
-        let dosisFaltantes = Number(vacuna.getDosisRequeridas) - dosisAplicadas
-        personasFaltantes.push(persona);
-      }
-    });
-  
+    
+    else{
+      let personasMongo:Array<Persona> = await findPersonas();
+      personasMongo.forEach(persona => {
+        const aplicaciones = persona.getAplicaciones.filter(a => a.getVacunaAplicada === vacuna.getId);
+        const dosisAplicadas = aplicaciones.length;
+        
+        if (dosisAplicadas < Number(vacuna.getDosisRequeridas)) {
+          let dosisFaltantes = Number(vacuna.getDosisRequeridas) - dosisAplicadas
+          personasFaltantes.push(persona);
+        }
+      })
+    }
     _res.send(personasFaltantes);
   });
 
-  routerVacunas.get("/vacunas/fabricante/:fabricante", (_req, _res) => {
-    const vacunasFiltradas = vacunas.filter(v => v.getFabricantes.includes(_req.params.fabricante));
+  routerVacunas.get("/vacunas/fabricante/:fabricante", async (_req, _res) => {
+    let vacunasMong:Array<Vacuna> = await findVacunas(); 
+    const vacunasFiltradas = vacunasMong.filter(v => v.getFabricantes.includes(_req.params.fabricante));
     
     if (vacunasFiltradas.length === 0) {
       _res.status(404).send(`No se encontraron vacunas del fabricante '${_req.params.fabricante}'`);
