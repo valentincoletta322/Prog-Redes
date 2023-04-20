@@ -3,7 +3,7 @@ import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
 import { personas } from "../..";
 import { vacunas } from "../..";
-import { deleteVacuna } from "../mongos/vacunasMongo";
+import { deleteVacuna, findVacuna } from "../mongos/vacunasMongo";
 
 export const routerVacunas = Router();
 
@@ -12,10 +12,12 @@ routerVacunas.get('/vacunas', (_req,_res) => {
     _res.json(vacunas);
 });
 
-routerVacunas.get("/vacunas/:id", (_req,_res) => {
-    _res.json(vacunas.find(item => {
-                  return item.getId == Number(_req.params.id)
-              }));
+routerVacunas.get("/vacunas/:id", async (_req,_res) => {
+  const vacuna = await findVacuna(Number(_req.params.id));
+  if (!vacuna){
+    _res.status(404).send;
+  }
+  _res.json(vacuna)
 })
 
 routerVacunas.post("/vacunas", (_req, _res) => {

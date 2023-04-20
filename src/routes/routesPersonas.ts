@@ -14,8 +14,16 @@ routerPersonas.get("/personas", async (_req,_res) => {
     const result = await findPersonas();
     _res.json(result);
   })
+
+  routerPersonas.get("/personas/:dni", async (_req,_res) => {
+    const persona = await findPersona(Number(_req.params.dni));
+    if (!persona){
+      _res.status(404).send;
+    }
+    _res.json(persona)
+})
   
-  routerPersonas.post("/personas", (_req, _res) => {
+routerPersonas.post("/personas", (_req, _res) => {
     if (personas.find(persona => persona.getDni === _req.body.dni)) {
       _res.status(400).json({ error: `Ya hay una persona con el dni ${_req.body.dni}` });
     } else {

@@ -25,25 +25,23 @@ export async function findVacunas() {
         return vacunasArray;
    }
 
-
 export async function findVacuna(id:Number) {
 
         const database = client.db('Vacunacion');
-
         const vacunas = database.collection('Vacunas');
 
         const query = { id: id };
-
-        const result = await vacunas.findOne(query);
-       
-        if (!result.value) {
-          result.value = 404;
+        const doc = await vacunas.findOne(query);
+    
+        if(!doc){
+          console.log("No encontrado")
+          return null;
         }
+        
+        const vacuna = new Vacuna(doc.id, doc.descripcion, doc.fabricantes, doc.tipo, doc.dosisRequeridas);
+        console.log(vacuna);
 
-        console.log(result);
-        console.log(`FIND ONE`);
-        return result.value;
-
+        return vacuna;
    }
 
 
