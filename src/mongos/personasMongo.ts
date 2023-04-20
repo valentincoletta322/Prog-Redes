@@ -80,7 +80,7 @@ export async function updatePersona(persona: Persona) {
   const query = { dni: persona.getDni };
   const result = await usuarios.findOneAndReplace(query, JSON.parse(JSON.stringify(persona)));
   if (!result.value) {
-    return 404;
+    return 400;
   }
   else return 204;
 }

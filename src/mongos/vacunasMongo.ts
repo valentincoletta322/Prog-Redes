@@ -47,7 +47,7 @@ export async function findVacuna(id:Number) {
       const query = { id: id };
       const result = await vacunas.findOneAndDelete(query);
       if (!result.value) {
-        return 404;
+        return 400;
       }
       return 204;
 }

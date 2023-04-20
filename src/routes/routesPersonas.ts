@@ -40,10 +40,8 @@ routerPersonas.post("/personas", async (_req, _res) => {
     _res.status(result).send();
   });
   
-  routerPersonas.patch('/personas/:dni', (_req, _res) => {
-    const dni = Number(_req.params.dni);
-    const persona = personas.find(p => p.getDni == Number(dni));
-  
+  routerPersonas.patch('/personas/:dni', async (_req, _res) => {
+    const persona = await findPersona(Number(_req.params.dni));
     if (!persona) {
       return _res.status(404).send();
     } else{
@@ -59,6 +57,7 @@ routerPersonas.post("/personas", async (_req, _res) => {
       if (_req.body.sexo) {
         persona.setSexo=_req.body.sexo;
       }
+      await updatePersona(persona);
     }
     return _res.status(204).send();
   });
