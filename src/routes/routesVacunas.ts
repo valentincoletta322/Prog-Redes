@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
-//import { personas } from "../..";
-//import { vacunas } from "../..";
 import { deleteVacuna, findVacuna, findVacunas, insertVacunas, updateVacuna } from "../mongos/vacunasMongo";
 import { findPersonas } from "../mongos/personasMongo";
 
