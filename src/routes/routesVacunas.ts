@@ -3,16 +3,17 @@ import { Vacuna } from '../clases/Vacuna';
 import { Persona } from "../clases/Persona";
 import { deleteVacuna, findVacuna, findVacunas, insertVacunas, updateVacuna } from "../mongos/vacunasMongo";
 import { findPersonas } from "../mongos/personasMongo";
+import { verificarClave } from "../verificacion";
 
 export const routerVacunas = Router();
 
 
-routerVacunas.get('/vacunas', async (_req,_res) => {
+routerVacunas.get('/vacunas', verificarClave, async (_req,_res) => {
     const vacunasMongo = await findVacunas();
     _res.json(vacunasMongo);
 });
 
-routerVacunas.get("/vacunas/:id", async (_req,_res) => {
+routerVacunas.get("/vacunas/:id", verificarClave, async (_req,_res) => {
   const vacuna = await findVacuna(Number(_req.params.id));
   if (!vacuna){
     _res.status(404).send;
@@ -20,7 +21,7 @@ routerVacunas.get("/vacunas/:id", async (_req,_res) => {
   _res.json(vacuna)
 })
 
-routerVacunas.post("/vacunas", async (_req, _res) => {
+routerVacunas.post("/vacunas", verificarClave, async (_req, _res) => {
   if (await findVacuna(_req.body.id)) {
     _res.status(400).json({ error: `Ya hay una vacuna con id ${_req.body.id}` });
   } else {
@@ -30,7 +31,7 @@ routerVacunas.post("/vacunas", async (_req, _res) => {
   }
   });
 
-  routerVacunas.put("/vacunas/:id", async (_req,_res) => {
+  routerVacunas.put("/vacunas/:id", verificarClave, async (_req,_res) => {
     const vacuna = await findVacuna(Number(_req.params.id))
     if (!vacuna){
       _res.status(404).send;
@@ -44,7 +45,7 @@ routerVacunas.post("/vacunas", async (_req, _res) => {
     _res.status(204).send()
   })
 
-  routerVacunas.patch('/vacunas/:id', async (_req, _res) => {
+  routerVacunas.patch('/vacunas/:id', verificarClave, async (_req, _res) => {
     const vacuna = await findVacuna(Number(_req.params.id))
     if (!vacuna){
       _res.status(404).send;
@@ -66,13 +67,13 @@ routerVacunas.post("/vacunas", async (_req, _res) => {
     return _res.status(204).send();
   });
 
-  routerVacunas.delete('/vacunas/:id', async (_req, _res) => {
+  routerVacunas.delete('/vacunas/:id', verificarClave, async (_req, _res) => {
     const id = Number(_req.params.id);
     const result = await deleteVacuna(id);
     _res.status(result).send();
   });
   
-  routerVacunas.get('/vacunas/:id/dosisFaltantes', async (_req, _res) => {
+  routerVacunas.get('/vacunas/:id/dosisFaltantes', verificarClave, async (_req, _res) => {
     let personasFaltantes:Array<Persona> = new Array<Persona>
     
     const vacuna = await findVacuna(Number(_req.params.id));
@@ -95,7 +96,7 @@ routerVacunas.post("/vacunas", async (_req, _res) => {
     _res.send(personasFaltantes);
   });
 
-  routerVacunas.get("/vacunas/fabricante/:fabricante", async (_req, _res) => {
+  routerVacunas.get("/vacunas/fabricante/:fabricante", verificarClave, async (_req, _res) => {
     let vacunasMong:Array<Vacuna> = await findVacunas(); 
     const vacunasFiltradas = vacunasMong.filter(v => v.getFabricantes.includes(_req.params.fabricante));
     
