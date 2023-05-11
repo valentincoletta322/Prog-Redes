@@ -4,17 +4,18 @@ import { Persona } from "../clases/Persona";
 import { Aplicacion } from "../clases/Aplicacion";
 import { StatusCodes } from "http-status-codes";
 import { deletePersona, findPersona, findPersonas, insertPersona, updatePersona } from "../mongos/personasMongo";
+import { verificarClave } from "../verificacion";
 
 export const routerPersonas = Router();
 
 
-routerPersonas.get("/personas", async (_req,_res) => {
+routerPersonas.get("/personas", verificarClave, async (_req,_res) => {
     const listaDePersonas = await findPersonas();
     console.log(listaDePersonas);
     _res.json(listaDePersonas);
   })
 
-  routerPersonas.get("/personas/:dni", async (_req,_res) => {
+  routerPersonas.get("/personas/:dni", verificarClave, async (_req,_res) => {
     const persona = await findPersona(Number(_req.params.dni));
     if (!persona){
       _res.status(404).send;
@@ -22,7 +23,7 @@ routerPersonas.get("/personas", async (_req,_res) => {
     _res.json(persona)
 })
   
-routerPersonas.post("/personas", async (_req, _res) => {
+routerPersonas.post("/personas", verificarClave, async (_req, _res) => {
     if (await findPersona(_req.body.dni)) {
       _res.status(400).json({ error: `Ya hay una persona con el dni ${_req.body.dni}` });
     } else {
@@ -32,13 +33,13 @@ routerPersonas.post("/personas", async (_req, _res) => {
     }
   });
   
-  routerPersonas.delete('/personas/:dni', async (_req, _res) => {
+  routerPersonas.delete('/personas/:dni', verificarClave, async (_req, _res) => {
     const dni = Number(_req.params.dni);
     const result = await deletePersona(dni);
     _res.status(result).send();
   });
   
-  routerPersonas.patch('/personas/:dni', async (_req, _res) => {
+  routerPersonas.patch('/personas/:dni', verificarClave, async (_req, _res) => {
     const persona = await findPersona(Number(_req.params.dni));
     if (!persona) {
       return _res.status(404).send();
@@ -60,7 +61,7 @@ routerPersonas.post("/personas", async (_req, _res) => {
     return _res.status(204).send();
   });
   
-  routerPersonas.put("/personas/:dni", async (_req,_res) => {
+  routerPersonas.put("/personas/:dni", verificarClave, async (_req,_res) => {
     const persona = await findPersona(Number(_req.params.dni));
     if (!persona){
         _res.status(404).send() 
@@ -76,7 +77,7 @@ routerPersonas.post("/personas", async (_req, _res) => {
   
   /* Otros métodos */
   
-  routerPersonas.get("/personas/:dni/aplicaciones",async (_req,_res) => {
+  routerPersonas.get("/personas/:dni/aplicaciones", verificarClave, async (_req,_res) => {
     const persona = await findPersona(Number(_req.params.dni));
     if (!persona){
         _res.status(404).send() 
@@ -87,7 +88,7 @@ routerPersonas.post("/personas", async (_req, _res) => {
   })
   
   
-  routerPersonas.post("/personas/:dni/aplicaciones", async (_req,_res) => {
+  routerPersonas.post("/personas/:dni/aplicaciones", verificarClave, async (_req,_res) => {
     const persona = await findPersona(Number(_req.params.dni));
     if (!persona){
         _res.status(404).send() 

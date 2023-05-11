@@ -11,7 +11,7 @@ import { routerUsuarios } from './src/routes/routesUsuarios';
 
 const app: express.Application = express(); 
 
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
 
