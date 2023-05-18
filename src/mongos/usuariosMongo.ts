@@ -1,13 +1,6 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";  
 import { Usuario } from "../clases/Usuario";
-import { createHash } from 'node:crypto'
-
-function MD5(content: string) {
-
-return createHash('MD5').update(content).digest('hex')
-
-}
 
 const { MongoClient } = require("mongodb");
 

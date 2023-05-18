@@ -32,8 +32,3 @@ routerUsuarios.post('/login', async (_req,_res) => {
     }
     else _res.status(200).send('Wrong.');
 });
-
-routerUsuarios.get('/current', (_req,_res) => {
-    console.log("current info");
-    _res.status(200).send();
-});
